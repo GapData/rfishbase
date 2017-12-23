@@ -49,11 +49,13 @@ countrysubref <- endpoint("countrysubref")
 #' }
 #' @details 
 #' e.g. http://www.fishbase.us/Country
-c_code <- function(c_code, server = getOption("FISHBASE_API", FISHBASE_API), fields='', limit = 500){
+c_code <- function(c_code, server = getOption("FISHBASE_API", FISHBASE_API), 
+  version = NULL, fields='', limit = 500, ...){
+
   resp <- httr::GET(paste0(server, "/faoareas"), 
-                    query = list(C_Code = c_code, limit = limit,
-                                 fields = fields),
-                    httr::user_agent(make_ua()))  
+    ver_header(version),
+    query = list(C_Code = c_code, limit = limit, fields = fields),
+    httr::user_agent(make_ua()), ...)
   check_and_parse(resp)
 }
 
@@ -70,8 +72,12 @@ c_code <- function(c_code, server = getOption("FISHBASE_API", FISHBASE_API), fie
 #' }
 #' @details currently this is ~ FAO areas table (minus "note" field)
 #' e.g. http://www.fishbase.us/Country/FaoAreaList.php?ID=5537
-distribution <- function(species_list, fields = NULL, server = getOption("FISHBASE_API", FISHBASE_API), limit = 500){
-  faoareas(species_list, fields = fields, server = server, limit = limit)
+distribution <- function(species_list, fields = NULL, 
+  server = getOption("FISHBASE_API", FISHBASE_API), version = NULL, 
+  limit = 500, ...){
+
+  faoareas(species_list, fields = fields, server = server, 
+    version = version, limit = limit, ...)
 }
 
 
@@ -90,7 +96,10 @@ distribution <- function(species_list, fields = NULL, server = getOption("FISHBA
 #' }
 #' @details currently this is ~ FAO areas table (minus "note" field)
 #' e.g. http://www.fishbase.us/Country/FaoAreaList.php?ID=5537
-faoareas <- function(species_list, fields = NULL, server = getOption("FISHBASE_API", FISHBASE_API), limit = 500){
+faoareas <- function(species_list, fields = NULL, 
+  server = getOption("FISHBASE_API", FISHBASE_API), version = NULL, 
+  limit = 500, ...){
+
   codes <- speccodes(species_list)
   
   faoareas_get <- c('AreaCode', 'SpecCode', 'Status')
@@ -98,9 +107,9 @@ faoareas <- function(species_list, fields = NULL, server = getOption("FISHBASE_A
   
   faoareas_fl <- paste0(if (!is.null(fields)) c(faoareas_get, fields) else faoareas_get, collapse = ",")
   dplyr::bind_rows(lapply(codes, function(code) {
-    resp <- httr::GET(paste0(server, "/faoareas"), 
+    resp <- httr::GET(paste0(server, "/faoareas"), ver_header(version), 
                       query = list(SpecCode = code, limit = limit, fields = faoareas_fl),
-                      httr::user_agent(make_ua()))
+                      httr::user_agent(make_ua()), ...)
     table1 <- check_and_parse(resp)
     if (is.null(table1)) return(dplyr::tbl_df(NULL))
     
@@ -114,10 +123,13 @@ faoareas <- function(species_list, fields = NULL, server = getOption("FISHBASE_A
 }
 
 
-faoarrefs <- function(area_code, fields = NULL, server = getOption("FISHBASE_API", FISHBASE_API), limit = 100){
+faoarrefs <- function(area_code, fields = NULL, server = getOption("FISHBASE_API", FISHBASE_API), 
+  version = NULL, limit = 100, ...){
+
   resp <- httr::GET(paste0(server, "/faoarref/", area_code), 
-              query = list(limit = limit, fields = fields),
-              user_agent(make_ua()))
+    ver_header(version),
+    query = list(limit = limit, fields = fields),
+    httr::user_agent(make_ua()), ...)
   check_and_parse(resp)
 }
 

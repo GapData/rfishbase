@@ -12,7 +12,7 @@ SEALIFEBASE_API <- "https://fishbase.ropensci.org/sealifebase"
 #' @inheritParams species
 #' @return the taxa list
 #' @export
-load_taxa <- function(update = FALSE, cache = TRUE, server = getOption("FISHBASE_API", FISHBASE_API), limit = 5000L){
+load_taxa <- function(update = FALSE, cache = TRUE, server = getOption("FISHBASE_API", FISHBASE_API), version = NULL, limit = 5000L, ...){
   
   ## Load the correct taxa table based on the server setting
   if(grepl("https*://fishbase.ropensci.org$", server)){
@@ -39,9 +39,10 @@ load_taxa <- function(update = FALSE, cache = TRUE, server = getOption("FISHBASE
         while(k<limit){
           
           resp <- GET(paste0(server, "/taxa"), 
+                      ver_header(version),
                       query = list(limit=as.integer(min(5000,limit-k)), 
                                    offset=as.integer(k+1)), 
-                      user_agent(make_ua()))
+                      user_agent(make_ua()), ...)
           k <- k+5000
           all_taxa_tmp <- check_and_parse(resp)
           drop <- match(c("Author", "Remark"), names(all_taxa_tmp)) ## Non-ascii fields, not needed
@@ -50,8 +51,9 @@ load_taxa <- function(update = FALSE, cache = TRUE, server = getOption("FISHBASE
       } else {
       
       resp <- GET(paste0(server, "/taxa"), 
+                  ver_header(version),
                   query = list(family='', limit=as.integer(limit)), 
-                  user_agent(make_ua()))
+                  user_agent(make_ua()), ...)
       all_taxa <- check_and_parse(resp)
       drop <- match(c("Author", "Remark"), names(all_taxa)) ## Non-ascii fields, not needed
       all_taxa <- all_taxa[-drop]

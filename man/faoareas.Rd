@@ -5,7 +5,7 @@
 \title{faoareas}
 \usage{
 faoareas(species_list, fields = NULL, server = getOption("FISHBASE_API",
-  FISHBASE_API), limit = 500)
+  FISHBASE_API), version = NULL, limit = 500, ...)
 }
 \arguments{
 \item{species_list}{A vector of scientific names (each element as "genus species"). If empty, the table will be loaded up to the limit. This makes it possible to load an entire table without knowledge of the species in the table, thus avoiding uneccesary API calls.}
@@ -16,8 +16,13 @@ of data transfered over the network if only certain columns are needed.}
 
 \item{server}{base URL to the FishBase API (by default). For SeaLifeBase, use https://fishbase.ropensci.org/sealifebase}
 
+\item{version}{API version, only applies to Fishbase right now. See 
+\code{\link{versions}} to get versions available.}
+
 \item{limit}{The maximum number of matches from a single API call (e.g. per species). Function
 will warn if this needs to be increased, otherwise can be left as is.}
+
+\item{...}{additional arguments to \code{\link[httr]{GET}}}
 }
 \value{
 a tibble, empty tibble if no results found

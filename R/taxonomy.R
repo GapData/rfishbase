@@ -10,6 +10,8 @@ taxendpt <- endpoint("taxa")
 #' can be left as is. 
 #' @param server base URL to the FishBase API (by default). For SeaLifeBase, 
 #' use https://fishbase.ropensci.org/sealifebase
+#' @param version API version, only applies to Fishbase right now. See 
+#' \code{\link{versions}} to get versions available.
 #' @param ... additional arguments to \code{\link[httr]{GET}}
 #' @examples 
 #' taxonomy(genus = "Oreochromis", species = "amphimelas")
@@ -27,10 +29,10 @@ taxendpt <- endpoint("taxa")
 #' spl <- function(x) strsplit(x, "\\s")[[1]]
 #' Map(function(x) { z <- spl(x); taxonomy(z[1], z[2]) }, spp)
 taxonomy <- function(genus = NULL, species = NULL, limit = 200, 
-  server = getOption("FISHBASE_API", FISHBASE_API), ...) {
+  server = getOption("FISHBASE_API", FISHBASE_API), version = NULL, ...) {
   
   if (is.null(Filter(Negate(is.null), c(genus, species)))) 
     stop("must pass in genus, species, or both")
   taxendpt(query = list(Genus = genus, Species = species), limit = limit, 
-           server = server, ...)
+           server = server, version = version, ...)
 }

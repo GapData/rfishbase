@@ -5,14 +5,19 @@
 \title{list_fields}
 \usage{
 list_fields(fields, server = getOption("FISHBASE_API", FISHBASE_API),
-  implemented_only = TRUE)
+  version = NULL, implemented_only = TRUE, ...)
 }
 \arguments{
 \item{fields}{field (column name) to search for}
 
 \item{server}{base URL to the FishBase API (by default). For SeaLifeBase, use https://fishbase.ropensci.org/sealifebase}
 
+\item{version}{API version, only applies to Fishbase right now. See \code{\link{versions}}
+to get versions available.}
+
 \item{implemented_only}{by default, only return those tables that have been implemented.}
+
+\item{...}{additional arguments to \code{\link[httr]{GET}}}
 }
 \value{
 a data frame listing the table names (matching function names in rfishbase) and the matching column names those tables have implemented.

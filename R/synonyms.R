@@ -26,20 +26,22 @@
 #'  synonyms(5537)
 #'  }
 synonyms <- function(species_list, limit = 50, server = getOption("FISHBASE_API", FISHBASE_API), 
+                     version = NULL,
                      fields = c("SynGenus", "SynSpecies", "Valid", "Misspelling", 
                                 "Status", "Synonymy", "Combination", "SpecCode",
-                                "SynCode", "CoL_ID", "TSN", "WoRMS_ID")){
+                                "SynCode", "CoL_ID", "TSN", "WoRMS_ID"), ...){
   
   
   dplyr::bind_rows(lapply(species_list, function(species){
     s <- parse_name(species)
     resp <- httr::GET(paste0(server, "/synonyms"), 
+                ver_header(version),
                 query = list(SynSpecies = s$species, 
                              SynGenus = s$genus, 
                              SpecCode = s$speccode,
                              limit = limit,
                              fields = paste(fields, collapse=",")),
-                user_agent(make_ua()))
+                user_agent(make_ua()), ...)
     df <- check_and_parse(resp)
     df <- reclass(df, "Valid", "logical")
     df <- reclass(df, "Misspelling", "logical")
@@ -62,9 +64,11 @@ reclass <- function(df, col_name, new_class){
 #' @inheritParams species
 #' @return a string of the validated names
 #' @export
-validate_names <- function(species_list, limit = 50, server = getOption("FISHBASE_API", FISHBASE_API)){
+validate_names <- function(species_list, limit = 50, server = getOption("FISHBASE_API", FISHBASE_API), 
+  version = NULL, ...){
+  
   out <- sapply(species_list, function(x) {
-    syn_table <- synonyms(x, limit = limit, server = server)
+    syn_table <- synonyms(x, limit = limit, server = server, version = version, ...)
     if(length(unique(suppressWarnings(syn_table$SpecCode))) > 1){
       warning(paste0("FishBase says that '", x, 
                     "' can also be misapplied to other species

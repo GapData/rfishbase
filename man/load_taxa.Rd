@@ -5,7 +5,7 @@
 \title{load_taxa}
 \usage{
 load_taxa(update = FALSE, cache = TRUE, server = getOption("FISHBASE_API",
-  FISHBASE_API), limit = 5000L)
+  FISHBASE_API), version = NULL, limit = 5000L, ...)
 }
 \arguments{
 \item{update}{logical, should we query the API to update the available list?}
@@ -15,8 +15,13 @@ load_taxa(update = FALSE, cache = TRUE, server = getOption("FISHBASE_API",
 
 \item{server}{base URL to the FishBase API (by default). For SeaLifeBase, use https://fishbase.ropensci.org/sealifebase}
 
+\item{version}{API version, only applies to Fishbase right now. See 
+\code{\link{versions}} to get versions available.}
+
 \item{limit}{The maximum number of matches from a single API call (e.g. per species). Function
 will warn if this needs to be increased, otherwise can be left as is.}
+
+\item{...}{additional arguments to \code{\link[httr]{GET}}}
 }
 \value{
 the taxa list

@@ -15,11 +15,15 @@
 #' ecology(c("Oreochromis niloticus", "Salmo trutta"),
 #'         fields=c("SpecCode", "FoodTroph", "FoodSeTroph", "DietTroph", "DietSeTroph"))
 #' }
-ecology <- function(species_list=NULL, fields = NULL, query = NULL, limit = 1, server = getOption("FISHBASE_API", FISHBASE_API)){
+ecology <- function(species_list=NULL, fields = NULL, query = NULL, limit = 1, 
+    server = getOption("FISHBASE_API", FISHBASE_API), version = NULL, ...){
+
   if(limit == 1) # don't bug user about missing returns
-    suppressWarnings(ecology_endpoint(species_list, fields = fields, query = query, limit = limit, server = server))
+    suppressWarnings(ecology_endpoint(species_list, fields = fields, 
+        query = query, limit = limit, server = server, version = version, ...))
   else
-    ecology_endpoint(species_list, fields = fields, query = query, limit = limit, server = server)
+    ecology_endpoint(species_list, fields = fields, query = query, 
+        limit = limit, server = server, version = version, ...)
 }
 
 ## This function wants to have custom default for the 'limit' argument.  To do this, first create 

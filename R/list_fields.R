@@ -3,7 +3,10 @@
 #' list fields
 #' @param fields field (column name) to search for
 #' @param  server base URL to the FishBase API (by default). For SeaLifeBase, use https://fishbase.ropensci.org/sealifebase 
+#' @param version API version, only applies to Fishbase right now. See \code{\link{versions}}
+#' to get versions available.
 #' @param implemented_only by default, only return those tables that have been implemented.  
+#' @param ... additional arguments to \code{\link[httr]{GET}}
 #' @return a data frame listing the table names (matching function names in rfishbase) and the matching column names those tables have implemented.
 #' @details method will use partial matching. Hence "Temp" will match column names such as "TempMin" and "TempMax", but "MinTemp" will not.  Likewise,
 #' neither "Minimum" or "Temperature" will match "TempMin", so begin with the shortest query possible and refine based on search results when necessary.
@@ -15,9 +18,12 @@
 #' list_fields("Temp")
 #' }
 #' @export
-list_fields <- function(fields,  server = getOption("FISHBASE_API", FISHBASE_API), implemented_only = TRUE){
+list_fields <- function(fields,  server = getOption("FISHBASE_API", FISHBASE_API), 
+    version = NULL, implemented_only = TRUE, ...){
+
   args <- list(fields = fields)
-  resp <- httr::GET(paste0(server, "/listfields"), query = args)
+  resp <- httr::GET(paste0(server, "/listfields"), ver_header(version), 
+    query = args, ...)
   data <- check_and_parse(resp)
   if(is(data, "data.frame") && implemented_only){
     exists <- as.character(lsf.str("package:rfishbase"))

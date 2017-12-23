@@ -5,7 +5,7 @@
 \title{references}
 \usage{
 references(codes = NULL, fields = NULL, server = getOption("FISHBASE_API",
-  FISHBASE_API))
+  FISHBASE_API), version = NULL, ...)
 }
 \arguments{
 \item{codes}{One or more Fishbase reference numbers, matching the RefNo 
@@ -18,6 +18,9 @@ over the network if only certain columns are needed.}
 
 \item{server}{base URL to the FishBase API (by default). For SeaLifeBase, 
 use https://fishbase.ropensci.org/sealifebase}
+
+\item{version}{API version, only applies to Fishbase right now. See 
+\code{\link{versions}} to get versions available.}
 
 \item{...}{additional arguments to \code{\link[httr]{GET}}}
 }

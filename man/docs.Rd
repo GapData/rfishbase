@@ -12,7 +12,7 @@ documentation summarizing all available tables is shown.}
 
 \item{server}{base URL to the FishBase API (by default). For SeaLifeBase, use https://fishbase.ropensci.org/sealifebase}
 
-\item{...}{additional arguments to httr::GET}
+\item{...}{additional arguments to \code{\link[httr]{GET}}}
 }
 \value{
 A data.frame which lists the name of each table (if no table argument is given), along with a description

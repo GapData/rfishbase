@@ -5,11 +5,13 @@
 #' @param limit The maximum number of matches from a single API call (e.g. per species). Function
 #'   will warn if this needs to be increased, otherwise can be left as is. 
 #' @param server base URL to the FishBase API (by default). For SeaLifeBase, use https://fishbase.ropensci.org/sealifebase
+#' @param version API version, only applies to Fishbase right now. See 
+#' \code{\link{versions}} to get versions available.
 #' @param fields a character vector specifying which fields (columns) should be returned. By default,
 #'  all available columns recognized by the parser are returned. This option can be used to limit the amount
 #'  of data transfered over the network if only certain columns are needed. 
 #' @param query a named list specifying specific subsets of fields.
-#' @param ... additional arguments to httr::GET
+#' @param ... additional arguments to \code{\link[httr]{GET}}
 #' @return a data.frame with rows for species and columns for the fields returned by the query (FishBase 'species' table)
 #' @details 
 #' The Species table is the heart of FishBase. This function provides a convenient way to 

@@ -21,11 +21,13 @@
 #' }
 #' @seealso \code{\link{commonnames}}, \code{\link{species_list}}, \code{\link{synonyms}}
 #' @export
-common_to_sci <- function(x, Language = NULL, limit = 1000, server = getOption("FISHBASE_API", FISHBASE_API)){
+common_to_sci <- function(x, Language = NULL, limit = 1000, server = getOption("FISHBASE_API", FISHBASE_API),
+  version = NULL){
   
   out <- sapply(x, function(x){
     # Look up SpecCode for the common names
     resp <- GET(paste0(server, "/comnames"), 
+                ver_header(version),
                 query = list(ComName = x,
                              Language = Language,
                              limit = limit,  # SpecCode same for all matches
@@ -67,17 +69,18 @@ common_to_sci <- function(x, Language = NULL, limit = 1000, server = getOption("
 common_names <- function(species_list, 
                         limit = 1000, 
                         server = getOption("FISHBASE_API", FISHBASE_API), 
+                        version = NULL,
                         Language = NULL,
-                        fields = c('ComName', 'Language','C_Code', 'SpecCode')){
+                        fields = c('ComName', 'Language','C_Code', 'SpecCode'), ...){
   
   codes <- speccodes(species_list)
   
   dplyr::bind_rows(lapply(codes, function(code){
     resp <- httr::GET(paste0(server, "/comnames"), 
-                query = list(SpecCode = code, 
-                             limit = limit, 
-                             fields = paste(fields, collapse=",")),
-                user_agent(make_ua()))
+      ver_header(version),
+      query = list(SpecCode = code, limit = limit, 
+        fields = paste(fields, collapse=",")),
+      user_agent(make_ua()), ...)
     df <- check_and_parse(resp)
     if (is.null(df)) return(NULL)
     
@@ -123,7 +126,8 @@ commonnames <- function(species_list,
 sci_to_common <- function(species_list,
                           Language = NULL,
                           limit = 1000,
-                          server = getOption("FISHBASE_API", FISHBASE_API)){
+                          server = getOption("FISHBASE_API", FISHBASE_API), 
+                          version = NULL, ...){
   
   if(is.null(Language)){
     out <- sapply(species_list, function(s){
@@ -135,7 +139,8 @@ sci_to_common <- function(species_list,
   } else {
     ## based on most freq name in commonnames table
     out <- sapply(species_list, function(s){
-      df <- common_names(s, Language = Language, limit = limit)
+      df <- common_names(s, Language = Language, limit = limit, 
+        server = server, version = version, ...)
       names(which.max(table(df$ComName)))
     })
   }

@@ -5,7 +5,7 @@
 \title{common_to_sci}
 \usage{
 common_to_sci(x, Language = NULL, limit = 1000,
-  server = getOption("FISHBASE_API", FISHBASE_API))
+  server = getOption("FISHBASE_API", FISHBASE_API), version = NULL)
 }
 \arguments{
 \item{x}{a common name or list of common names}
@@ -16,6 +16,9 @@ common_to_sci(x, Language = NULL, limit = 1000,
 will warn if this needs to be increased, otherwise can be left as is.}
 
 \item{server}{base URL to the FishBase API (by default). For SeaLifeBase, use https://fishbase.ropensci.org/sealifebase}
+
+\item{version}{API version, only applies to Fishbase right now. See 
+\code{\link{versions}} to get versions available.}
 }
 \value{
 a character vector of scientific names

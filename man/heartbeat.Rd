@@ -4,10 +4,16 @@
 \alias{heartbeat}
 \title{heartbeat}
 \usage{
-heartbeat(server = getOption("FISHBASE_API", FISHBASE_API))
+heartbeat(server = getOption("FISHBASE_API", FISHBASE_API), version = NULL,
+  ...)
 }
 \arguments{
 \item{server}{base URL to the FishBase API (by default). For SeaLifeBase, use https://fishbase.ropensci.org/sealifebase}
+
+\item{version}{API version, only applies to Fishbase right now. See 
+\code{\link{versions}} to get versions available.}
+
+\item{...}{additional arguments to \code{\link[httr]{GET}}}
 }
 \value{
 An httr 'response' object.
